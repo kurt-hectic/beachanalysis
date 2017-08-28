@@ -1,0 +1,10 @@
+name: beachanal-environment
+
+dependencies:
+  - python>=3.5
+  - anaconda
+  - numpy
+  - toolz
+  - matplotlib
+  - dill
+  - pandas
