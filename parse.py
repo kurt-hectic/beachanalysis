@@ -1,4 +1,4 @@
-from datetime import datetime 
+from datetime import datetime,timedelta
 import re
 import sqlite3
 import sys
@@ -6,9 +6,11 @@ import sys
 with sqlite3.connect('messages.db') as conn:
 
 	c=conn.cursor()
+	c.execute("delete from messages")
 	with open('messages.txt', encoding='utf-8') as file:
 		content = file.readlines()
 		i=0
+		prevdate = None
 		while i<len(content):
 			message = content[i]
 			j=0
@@ -27,6 +29,9 @@ with sqlite3.connect('messages.db') as conn:
 				
 			
 			dt = datetime.strptime(date,'%d/%m/%Y, %H:%M')
+			if (dt == prevdate):
+				dt = dt + timedelta(seconds=1)
+				
 			p = message.find(':')
 			if (p==-1):
 				system = True
@@ -40,7 +45,7 @@ with sqlite3.connect('messages.db') as conn:
 			#print("On {} {} wrote {}".format(dt,author,message))
 			params = [dt,author,message,system]
 			c.execute("INSERT INTO messages (postdate,author,message,system) VALUES (?,?,?,?)",params)
-			
+			prevdate=dt
 			
 			i=i+1
 			
